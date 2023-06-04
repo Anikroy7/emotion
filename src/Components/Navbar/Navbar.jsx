@@ -1,6 +1,24 @@
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { logout } from "../../features/auth/authSlice";
+import { signOut } from "firebase/auth";
+import auth from "../../../firebase.init";
 
 const Navbar = () => {
+  const {
+    auth: { email },
+  } = useSelector((state) => state);
+const dispatch = useDispatch()
+  const handleLogout = () => {
+    const isConfirm = window.confirm("Are you want to logout sure?")
+    if(isConfirm){
+      signOut(auth)
+      .then(()=>{
+        dispatch(logout())
+      })
+    }
+  };
+
   const navItem = (
     <>
       <li>
@@ -12,12 +30,22 @@ const Navbar = () => {
       <li>
         <a>About</a>
       </li>
-      <li>
-        <Link to={'/login'}>Login</Link>
-      </li>
-      <li>
-      <Link to={'/signup'}>Signup</Link>
-      </li>
+      <>
+        {email ? (
+          <li>
+            <Link onClick={handleLogout}>Logout</Link>
+          </li>
+        ) : (
+          <>
+            <li>
+              <Link to={"/login"}>Login</Link>
+            </li>
+            <li>
+              <Link to={"/signup"}>Signup</Link>
+            </li>
+          </>
+        )}
+      </>
     </>
   );
   return (
@@ -47,7 +75,9 @@ const Navbar = () => {
             {navItem}
           </ul>
         </div>
-        <Link to={'/'} className="normal-case text-xl cursor-pointer">Emotion</Link>
+        <Link to={"/"} className="normal-case text-xl cursor-pointer">
+          Emotion
+        </Link>
       </div>
       <div className="navbar-end hidden lg:flex">
         <ul className="menu menu-horizontal px-1">{navItem}</ul>
