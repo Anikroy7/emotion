@@ -12,8 +12,8 @@ function App() {
       dispatch(setUser(user.email))
     }
   });
-
   return (
+
     <div>
       <RouterProvider router={routes} />
     </div>

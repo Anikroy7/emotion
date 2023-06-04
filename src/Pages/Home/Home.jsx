@@ -1,17 +1,25 @@
+import { useSelector } from "react-redux";
 import MediaCard from "../../Components/Navbar/MediaCard";
 import MediaForm from "../../Components/Navbar/MediaForm";
 import { useGetMediasQuery } from "../../features/auth/api/mediaSlice";
 import Loading from "../../utils/Loading";
+import { useGetUserByEmailQuery } from "../../features/auth/api/userApi";
 
 const Home = () => {
-  const { data, isLoading } = useGetMediasQuery();
+  const { data, isLoading:mediaLoading } = useGetMediasQuery();
+  const { email } = useSelector((state) => state.auth);
+  console.log(email);
 
-  if (isLoading) return <Loading />;
-  console.log(data.data);
+  const { data:userData, isLoading:userLoading } = useGetUserByEmailQuery({email}, {skip:!email});
+  
+  //  console.log('data', userData);
+  if (userLoading|| mediaLoading) return <Loading />;
+  if(userData){
+    localStorage.setItem('userId', userData.data._id)
+  }
   const sortedData = [...data.data]
     .sort((a, b) => b.reactions - a.reactions)
     .slice(0, 3);
-  console.log(sortedData);
   return (
     <section>
       <div>

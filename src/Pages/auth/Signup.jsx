@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { createUser, updateUserName } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
+import { useCreateUserMutation } from "../../features/auth/api/userApi";
+import Loading from "../../utils/Loading";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -14,26 +16,33 @@ const Signup = () => {
   } = useForm();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const dispatch = useDispatch();
+  const [postUser, { data, isLoading }] = useCreateUserMutation();
   const {
     auth: { email: loginEmail, loading, error, errorMsg },
   } = useSelector((state) => state);
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
+  console.log("user data", data);
   useEffect(() => {
     dispatch(updateUserName({ name }));
 
-    if(loginEmail){
-        navigate('/')
+    if (loginEmail) {
+      postUser({
+        name,
+        email: loginEmail,
+      });
+      if (data) {
+        navigate("/");
+      }
     }
-  }, [loginEmail, dispatch, name, navigate]);
+  }, [loginEmail, dispatch, name, navigate, data]);
 
-
+  if (isLoading) return <Loading />;
   const onSubmit = ({ name, email, password }) => {
     // console.log(data);
     setName(name);
     dispatch(createUser({ email, password }));
   };
-  console.log(name);
+
   return (
     <section>
       <h3 className="text-center font-bold text-xl">Signup</h3>

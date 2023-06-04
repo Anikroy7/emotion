@@ -5,10 +5,14 @@ const homesApi = apislice.injectEndpoints({
     getMedias: builder.query({
       query: () => "/media?populate=*",
     }),
+    createMedia: builder.mutation({
+      query: (data) => ({
+        url: "/media",
+        body: data,
+        method:'post'
+      }),
+    }),
   }),
 });
 
-export const {
-useGetMediasQuery
-
-} = homesApi;
+export const { useGetMediasQuery, useCreateMediaMutation } = homesApi;
