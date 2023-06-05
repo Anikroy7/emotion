@@ -9,6 +9,13 @@ const userApi = apislice.injectEndpoints({
         method:'post'
       }),
     }),
+    updateUser: builder.mutation({
+      query: (data) => ({
+        url:`/user/${data.email}`,
+        body:data,
+        method:'put'
+      }),
+    }),
 
     getUserByEmail: builder.query({
         query:({email})=> `user/${email}`
@@ -17,4 +24,4 @@ const userApi = apislice.injectEndpoints({
 });
 
 
-export const {useCreateUserMutation, useGetUserByEmailQuery}= userApi
+export const {useCreateUserMutation, useGetUserByEmailQuery, useUpdateUserMutation}= userApi

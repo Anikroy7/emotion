@@ -22,13 +22,13 @@ const dispatch = useDispatch()
   const navItem = (
     <>
       <li>
-        <a>Media</a>
+        <Link to={'/media'}>Media</Link>
       </li>
       <li>
         <a>Messages</a>
       </li>
       <li>
-        <a>About</a>
+        <Link to={'/about'}>About</Link>
       </li>
       <>
         {email ? (

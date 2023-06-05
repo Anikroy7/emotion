@@ -1,6 +1,25 @@
 
+import { useEffect, useState } from "react";
+import { useUpdateMediaMutation } from "../../features/auth/api/mediaSlice";
 
-const MediaCard = () => {
+const MediaCard = ({ image, text, reactions, name, _id }) => {
+  const [like, setLike] = useState(false);
+  const [updateMedia, { data, isLoading, isSuccess }] =
+    useUpdateMediaMutation();
+  
+const userId = localStorage.getItem('userId');
+const isexits= reactions.includes(userId);
+console.log(isexits);
+// console.log('alreadyLiked', alreadyLiked, userId);
+  useEffect(() => {
+    if (like) {
+      updateMedia({userId: userId , _id});
+    }
+    if(isexits){
+      setLike(true)
+    }
+  }, [like, isexits, updateMedia, userId]);
+
   return (
     <div className="bg-white rounded-lg shadow-md p-4 mx-auto max-w-md my-5">
       {/* Card content */}
@@ -8,42 +27,36 @@ const MediaCard = () => {
         {/* User avatar */}
         <img
           className="w-12 h-12 rounded-full mr-4"
-          src="https://www.shutterstock.com/image-vector/default-avatar-profile-icon-vector-260nw-1725655669.jpg"
+          src={image}
           alt="User Avatar"
         />
         <div>
           {/* User name */}
-          <h2 className="text-lg font-semibold">John Doe</h2>
+          <h2 className="text-lg font-semibold">{name}</h2>
           {/* Timestamp */}
           <p className="text-gray-600">2 hours ago</p>
         </div>
       </div>
       {/* Post content */}
-      <p className="text-gray-800 mt-4">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-        hendrerit orci nec ipsum consequat, id scelerisque urna sodales. Donec
-        auctor dignissim tortor, at tempor quam luctus et.
-      </p>
+      <p className="text-gray-800 mt-4">{text}</p>
       {/* Like and comment icons */}
       <div className="flex justify-between items-center mt-4">
         <div className="flex items-center">
-          <svg
-            className="w-6 h-6 mr-2 text-blue-500"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 22.586l-9-9V8.414l9 9 9-9V13h2V3h-5V1h-4v2H7V1H3v2H2v14h2v5z" />
-          </svg>
-          <span className="text-gray-600">42 Likes</span>
+          <img
+            className={`h-6 mt-1 mr-2 ${like && "hidden"}`}
+            onClick={() => setLike(true)}
+            src="https://icons-for-free.com/iconfiles/png/512/heart-131965017458786724.png"
+            alt=""
+          />
+          <img
+            className={`h-6 mt-1 mr-2 ${!like && "hidden"}`}
+            onClick={() => setLike(false)}
+            src="https://cdn2.vectorstock.com/i/1000x1000/37/36/red-heart-icon-love-icon-vector-23653736.jpg"
+            alt=""
+          />
+          <span className="text-gray-600">{reactions.length} Likes</span>
         </div>
         <div className="flex items-center">
-          <svg
-            className="w-6 h-6 mr-2 text-blue-500"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path d="M4 9h16v2H4zm0 4h10v2H4z" />
-          </svg>
           <span className="text-gray-600">10 Comments</span>
         </div>
       </div>
@@ -52,4 +65,3 @@ const MediaCard = () => {
 };
 
 export default MediaCard;
-

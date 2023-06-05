@@ -6,20 +6,24 @@ import Loading from "../../utils/Loading";
 import { useGetUserByEmailQuery } from "../../features/auth/api/userApi";
 
 const Home = () => {
-  const { data, isLoading:mediaLoading } = useGetMediasQuery();
+  const { data, isLoading: mediaLoading } = useGetMediasQuery();
   const { email } = useSelector((state) => state.auth);
   console.log(email);
 
-  const { data:userData, isLoading:userLoading } = useGetUserByEmailQuery({email}, {skip:!email});
-  
+  const { data: userData, isLoading: userLoading } = useGetUserByEmailQuery(
+    { email },
+    { skip: !email }
+  );
+
   //  console.log('data', userData);
-  if (userLoading|| mediaLoading) return <Loading />;
-  if(userData){
-    localStorage.setItem('userId', userData.data._id)
+  if (userLoading || mediaLoading) return <Loading />;
+  if (userData) {
+    localStorage.setItem("userId", userData.data._id);
   }
   const sortedData = [...data.data]
     .sort((a, b) => b.reactions - a.reactions)
     .slice(0, 3);
+  console.log("sortedData", sortedData);
   return (
     <section>
       <div>
@@ -29,13 +33,15 @@ const Home = () => {
       {/* Show top 3 media card */}
       <div>
         <h3 className="text-2xl py-3 font-bold">Popular Posts</h3>
-        {sortedData.map(({ _id, image, reaction, text }) => (
+
+        {sortedData?.map(({ _id, image, reactions, text, user: { name } }) => (
           <MediaCard
             key={_id}
             _id={_id}
             image={image}
-            reaction={reaction}
+            reactions={reactions}
             text={text}
+            name={name}
           />
         ))}
       </div>
